@@ -1495,7 +1495,7 @@ export async function printMessages() {
  * @param {Boolean} [options.fade=true] When false, the swipe chevrons will not fade in.
  */
 export async function redisplayChat({ targetChat = chat, startIndex = 0, fade = true } = {}) {
-    const messageElements = chatElement.find('.mes');
+    const messageElements = chatElement.children('.mes');
     messageElements.removeClass('last_mes');
 
     //Remove messages after index.
@@ -1531,7 +1531,7 @@ export async function redisplayChat({ targetChat = chat, startIndex = 0, fade = 
 
 export function scrollOnMediaLoad() {
     const started = Date.now();
-    const media = chatElement.find('.mes_block img, .mes_block video, .mes_block audio').toArray();
+    const media = chatElement.children('.mes').find('.mes_block img, .mes_block video, .mes_block audio').toArray();
     let mediaLoaded = 0;
 
     for (const currentElement of media) {
@@ -2533,8 +2533,8 @@ export function addOneMessage(mes, { type = undefined, insertAfter = null, scrol
 
 
     //last_mes should always be updated.
-    chatElement.find('.mes').removeClass('last_mes');
-    chatElement.find('.mes').last().addClass('last_mes');
+    chatElement.children('.mes').removeClass('last_mes');
+    chatElement.children('.mes').last().addClass('last_mes');
 
     if (showSwipes) refreshSwipeButtons();
     // Don't scroll if not inserting last
@@ -2720,7 +2720,7 @@ export function scrollChatToBottom({ waitForFrame } = {}) {
         let position = chatElement[0].scrollHeight;
 
         if (power_user.waifuMode) {
-            const lastMessage = chatElement.find('.mes').last();
+            const lastMessage = chatElement.children('.mes').last();
             if (lastMessage.length) {
                 const lastMessagePosition = lastMessage.position().top;
                 position = chatElement.scrollTop() + lastMessagePosition;
@@ -6022,18 +6022,18 @@ export async function duplicateCharacter({ avatar = null, silent = false } = {})
 }
 
 function setInContextMessages(msgInContextCount, type) {
-    chatElement.find('.mes').removeClass('lastInContext');
+    chatElement.children('.mes').removeClass('lastInContext');
 
     if (type === 'swipe' || type === 'regenerate' || type === 'continue') {
         msgInContextCount++;
     }
 
-    const lastMessageBlock = chatElement.find('.mes:not([is_system="true"]), .mes.toolCall').eq(-msgInContextCount);
+    const lastMessageBlock = chatElement.children('.mes:not([is_system="true"]), .mes.toolCall').eq(-msgInContextCount);
     lastMessageBlock.addClass('lastInContext');
 
     if (lastMessageBlock.length === 0) {
         const firstMessageId = getFirstDisplayedMessageId();
-        chatElement.find(`.mes[mesid="${firstMessageId}"]`).addClass('lastInContext');
+        chatElement.children(`.mes[mesid="${firstMessageId}"]`).addClass('lastInContext');
     }
 
     // Update last id to chat. No metadata save on purpose, gets hopefully saved via another call
@@ -9407,13 +9407,13 @@ export async function importCharacterChat(formData, { refresh = true } = {}) {
 export function updateViewMessageIds(startIndex = null) {
     const minId = startIndex ?? getFirstDisplayedMessageId();
 
-    chatElement.find('.mes').each(function (index, element) {
+    chatElement.children('.mes').each(function (index, element) {
         $(element).attr('mesid', minId + index);
         $(element).find('.mesIDDisplay').text(`#${minId + index}`);
     });
 
-    chatElement.find('.mes').removeClass('last_mes');
-    chatElement.find('.mes').last().addClass('last_mes');
+    chatElement.children('.mes').removeClass('last_mes');
+    chatElement.children('.mes').last().addClass('last_mes');
 
     updateEditArrowClasses();
 }
@@ -9435,8 +9435,8 @@ export function updateEditArrowClasses() {
     const upButton = message.find('.mes_edit_up');
     const copyButton = message.find('.mes_edit_copy');
     const deleteButton = message.find('.mes_edit_delete');
-    const lastId = Number(chatElement.find('.mes').last().attr('mesid'));
-    const firstId = Number(chatElement.find('.mes').first().attr('mesid'));
+    const lastId = Number(chatElement.children('.mes').last().attr('mesid'));
+    const firstId = Number(chatElement.children('.mes').first().attr('mesid'));
 
     copyButton.removeClass('disabled');
     deleteButton.removeClass('disabled');
@@ -11057,7 +11057,7 @@ jQuery(async function () {
         }
     });
     $(document).on('click', event => {
-        if ($(':focus').attr('id') !== 'send_textarea') {
+        if ($(document.activeElement).attr('id') !== 'send_textarea') {
             var validIDs = ['options_button', 'send_but', 'mes_impersonate', 'mes_continue', 'send_textarea', 'option_regenerate', 'option_continue'];
             if (!validIDs.includes($(event.target).attr('id'))) {
                 S_TAPreviouslyFocused = false;
@@ -11670,8 +11670,8 @@ jQuery(async function () {
             await saveChatConditional();
             chatElement.scrollTop(chatElement[0].scrollHeight);
             await eventSource.emit(event_types.MESSAGE_DELETED, chat.length);
-            chatElement.find('.mes').removeClass('last_mes');
-            chatElement.find('.mes').last().addClass('last_mes');
+            chatElement.children('.mes').removeClass('last_mes');
+            chatElement.children('.mes').last().addClass('last_mes');
         } else {
             console.log('this_del_mes is not >= 0, not deleting');
         }

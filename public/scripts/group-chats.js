@@ -282,7 +282,7 @@ export async function getGroupChat(groupId, reload = false) {
 
     if (group && Array.isArray(group.members) && freshChat) {
         chat.splice(0, chat.length);
-        chatElement.find('.mes').remove();
+        chatElement.children('.mes').remove();
         for (let member of group.members) {
             const character = characters.find(x => x.avatar === member || x.name === member);
             if (!character) {
@@ -305,7 +305,7 @@ export async function getGroupChat(groupId, reload = false) {
     } else if (Array.isArray(data) && data.length) {
         chat.splice(0, chat.length, ...data);
         chat.forEach(ensureMessageMediaIsArray);
-        chatElement.find('.mes').remove();
+        chatElement.children('.mes').remove();
         await printMessages();
     }
 
@@ -2473,7 +2473,7 @@ jQuery(() => {
         hideMutedSprites = value;
         onHideMutedSpritesClick(value);
     });
-    $('#send_textarea').on('keyup', onSendTextareaInput);
+    $('#send_textarea').off('keyup', onSendTextareaInput).on('keyup', onSendTextareaInput);
     $('#groupCurrentMemberPopoutButton').on('click', doCurMemberListPopout);
     $('#rm_group_chat_name').on('input', onGroupNameInput);
     $('#rm_group_delete').off().on('click', onDeleteGroupClick);

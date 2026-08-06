@@ -73,21 +73,39 @@ const observer = new MutationObserver(function (mutations) {
         }
         if (mutation.target.classList.contains('online_status_text')) {
             checkStatusDebounced();
-        } else if (mutation.target.parentNode === SelectedCharacterTab) {
+        } else if (typeof SelectedCharacterTab !== 'undefined' && SelectedCharacterTab && SelectedCharacterTab.contains(mutation.target)) {
             countTokensShortDebounced();
         } else if (mutation.target.classList.contains('mes_text')) {
-            for (const element of mutation.target.getElementsByTagName('math')) {
-                element.childNodes.forEach(function (child) {
-                    if (child.nodeType === Node.TEXT_NODE) {
-                        child.textContent = '';
+            mutation.addedNodes.forEach((node) => {
+                if (node instanceof HTMLElement) {
+                    if (node.tagName === 'MATH') {
+                        node.childNodes.forEach(function (child) {
+                            if (child.nodeType === Node.TEXT_NODE) {
+                                child.textContent = '';
+                            }
+                        });
+                    } else {
+                        for (const element of node.getElementsByTagName('math')) {
+                            element.childNodes.forEach(function (child) {
+                                if (child.nodeType === Node.TEXT_NODE) {
+                                    child.textContent = '';
+                                }
+                            });
+                        }
                     }
-                });
-            }
+                }
+            });
         }
     });
 });
 
-observer.observe(document.documentElement, observerConfig);
+$(document).ready(() => {
+    const chatElem = document.getElementById('chat');
+    if (chatElem) observer.observe(chatElem, observerConfig);
+    const topBar = document.getElementById('top-bar'); // Contains online_status_text
+    if (topBar) observer.observe(topBar, observerConfig);
+    if (typeof SelectedCharacterTab !== 'undefined' && SelectedCharacterTab !== null) observer.observe(SelectedCharacterTab, observerConfig);
+});
 
 
 /**
@@ -958,7 +976,7 @@ export function initRossMods() {
 
     function isInputElementInFocus() {
         //return $(document.activeElement).is(":input");
-        var focused = $(':focus');
+        var focused = $(document.activeElement);
         if (focused.is('input') || focused.is('textarea') || focused.prop('contenteditable') == 'true') {
             if (focused.attr('id') === 'send_textarea') {
                 return false;
