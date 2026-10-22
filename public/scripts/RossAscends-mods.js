@@ -514,7 +514,7 @@ export function dragElement($elmnt) {
     const observer = new MutationObserver((mutations) => {
         const $target = $(mutations[0].target);
         if (
-            !$target.is(':visible') ||
+            !isElementVisible($target[0]) ||
             $target.hasClass('resizing') ||
             $target.height() < 50 ||
             $target.width() < 50 ||
@@ -689,6 +689,13 @@ function autoFitSendTextArea() {
 export const autoFitSendTextAreaDebounced = debounce(autoFitSendTextArea, debounce_timeout.short);
 
 // ---------------------------------------------------
+
+export function isElementVisible(el) {
+    if (!el) return false;
+    const node = el instanceof jQuery ? el[0] : el;
+    if (!node) return false;
+    return node.offsetWidth > 0 || node.offsetHeight > 0;
+}
 
 export function initRossMods() {
     // initial status check
@@ -925,7 +932,7 @@ export function initRossMods() {
         var SwipeButR = $('.swipe_right:last');
         var SwipeTargetMesClassParent = $(e.target).closest('.last_mes');
         if (SwipeTargetMesClassParent !== null) {
-            if (SwipeButR.is(':visible')) {
+            if (isElementVisible(SwipeButR)) {
                 SwipeButR.trigger('click');
             }
         }
@@ -949,7 +956,7 @@ export function initRossMods() {
         var SwipeButL = $('.swipe_left:last');
         var SwipeTargetMesClassParent = $(e.target).closest('.last_mes');
         if (SwipeTargetMesClassParent !== null) {
-            if (SwipeButL.is(':visible')) {
+            if (isElementVisible(SwipeButL)) {
                 SwipeButL.trigger('click');
             }
         }
@@ -1048,17 +1055,17 @@ export function initRossMods() {
 
         // Ctrl+Enter for Regeneration Last Response. If editing, accept the edits instead
         if (event.ctrlKey && event.key == 'Enter') {
-            const editMesDone = $('.mes_edit_done:visible');
-            const reasoningMesDone = $('.mes_reasoning_edit_done:visible');
+            const editMesDone = Array.from(document.querySelectorAll('.mes_edit_done')).filter(isElementVisible);
+            const reasoningMesDone = Array.from(document.querySelectorAll('.mes_reasoning_edit_done')).filter(isElementVisible);
             if (editMesDone.length > 0) {
                 console.debug('Accepting edits with Ctrl+Enter');
                 $('#send_textarea').trigger('focus');
-                editMesDone.trigger('click');
+                $(editMesDone[0]).trigger('click');
                 return;
             } else if (reasoningMesDone.length > 0) {
                 console.debug('Accepting edits with Ctrl+Enter');
                 $('#send_textarea').trigger('focus');
-                reasoningMesDone.trigger('click');
+                $(reasoningMesDone[0]).trigger('click');
                 return;
             } else if (is_send_press == false) {
                 const skipConfirmKey = 'RegenerateWithCtrlEnter';
@@ -1166,7 +1173,7 @@ export function initRossMods() {
                 hotkeyTargets.send_textarea.value === '' &&
                 chatbarInFocus === true &&
                 //$('.swipe_right:last').css('display') === 'flex' &&
-                $('.last_mes .mes_buttons').is(':visible') &&
+                isElementVisible(document.querySelector('.last_mes .mes_buttons')) &&
                 $('#character_popup').css('display') === 'none' &&
                 $('#shadow_select_chat_popup').css('display') === 'none'
             ) {
@@ -1182,13 +1189,13 @@ export function initRossMods() {
         if (event.key == 'Escape') { //closes various panels
             //dont override Escape hotkey functions from script.js
             //"close edit box" and "cancel stream generation".
-            if ($('#curEditTextarea').is(':visible') || $('#mes_stop').is(':visible')) {
+            if (isElementVisible(document.getElementById('curEditTextarea')) || isElementVisible(document.getElementById('mes_stop'))) {
                 console.debug('escape key, but deferring to script.js routines');
                 return;
             }
 
-            if ($('#dialogue_popup').is(':visible')) {
-                if ($('#dialogue_popup_cancel').is(':visible')) {
+            if (isElementVisible(document.getElementById('dialogue_popup'))) {
+                if (isElementVisible(document.getElementById('dialogue_popup_cancel'))) {
                     $('#dialogue_popup_cancel').trigger('click');
                     return;
                 } else {
@@ -1197,17 +1204,17 @@ export function initRossMods() {
                 }
             }
 
-            if ($('#select_chat_popup').is(':visible')) {
+            if (isElementVisible(document.getElementById('select_chat_popup'))) {
                 $('#select_chat_cross').trigger('click');
                 return;
             }
 
-            if ($('#character_popup').is(':visible')) {
+            if (isElementVisible(document.getElementById('character_popup'))) {
                 $('#character_cross').trigger('click');
                 return;
             }
 
-            if ($('#dialogue_del_mes_cancel').is(':visible')) {
+            if (isElementVisible(document.getElementById('dialogue_del_mes_cancel'))) {
                 $('#dialogue_del_mes_cancel').trigger('click');
                 return;
             }
@@ -1220,61 +1227,63 @@ export function initRossMods() {
                 .not('#cfgConfig')
                 .not('#logprobsViewer')
                 .not('#movingDivs > div')
-                .is(':visible')) {
-                let visibleDrawerContent = $('.drawer-content:visible')
+                .toArray().some(isElementVisible)) {
+                let visibleDrawerContent = $('.drawer-content')
                     .not('#WorldInfo')
                     .not('#left-nav-panel')
                     .not('#right-nav-panel')
                     .not('#floatingPrompt')
                     .not('#cfgConfig')
                     .not('#logprobsViewer')
-                    .not('#movingDivs > div');
+                    .not('#movingDivs > div')
+                    .toArray().filter(isElementVisible);
                 $(visibleDrawerContent).parent().find('.drawer-icon').trigger('click');
                 return;
             }
 
-            if ($('#logprobsViewer').is(':visible')) {
+            if (isElementVisible(document.getElementById('logprobsViewer'))) {
                 $('#logprobsViewerClose').trigger('click');
                 return;
             }
 
-            if ($('#cfgConfig').is(':visible')) {
+            if (isElementVisible(document.getElementById('cfgConfig'))) {
                 $('#CFGClose').trigger('click');
                 return;
             }
 
-            if ($('#floatingPrompt').is(':visible')) {
+            if (isElementVisible(document.getElementById('floatingPrompt'))) {
                 $('#ANClose').trigger('click');
                 return;
             }
 
-            if ($('#WorldInfo').is(':visible')) {
+            if (isElementVisible(document.getElementById('WorldInfo'))) {
                 $('#WIDrawerIcon').trigger('click');
                 return;
             }
 
             const movingDivs = $('#movingDivs > div').toArray().reverse();
             for (const div of movingDivs) {
-                if ($(div).is(':visible')) {
+                if (isElementVisible(div)) {
                     $(div).find('.floating_panel_close, .dragClose').trigger('click');
                     return;
                 }
             }
 
-            if ($('#left-nav-panel').is(':visible') &&
+            if (isElementVisible(document.getElementById('left-nav-panel')) &&
                 $(LPanelPin).prop('checked') === false) {
                 $('#leftNavDrawerIcon').trigger('click');
                 return;
             }
 
-            if ($('#right-nav-panel').is(':visible') &&
+            if (isElementVisible(document.getElementById('right-nav-panel')) &&
                 $(RPanelPin).prop('checked') === false) {
                 $('#rightNavDrawerIcon').trigger('click');
                 return;
             }
-            if ($('.draggable').is(':visible')) {
+            if (Array.from(document.querySelectorAll('.draggable')).some(isElementVisible)) {
                 // Remove the first matched element
-                $('.draggable:first').remove();
+                const firstVisible = Array.from(document.querySelectorAll('.draggable')).find(isElementVisible);
+                if (firstVisible) $(firstVisible).remove();
                 return;
             }
         }

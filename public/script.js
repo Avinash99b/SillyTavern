@@ -11021,7 +11021,7 @@ function initCharacterSearch() {
     });
 
     searchButton.on('click', function () {
-        const newVisibility = !searchForm.is(':visible');
+        const newVisibility = !(searchForm[0].offsetWidth > 0 || searchForm[0].offsetHeight > 0);
         searchForm.toggle(newVisibility);
         searchButton.toggleClass('active', newVisibility);
         accountStorage.setItem(storageKey, String(newVisibility));
@@ -11187,7 +11187,8 @@ jQuery(async function () {
     $(document).on('click', '.mes', function () {
         //when a 'delete message' parent div is clicked
         // and we are in delete mode and del_checkbox is visible
-        if (!is_delete_mode || !$(this).children('.del_checkbox').is(':visible')) {
+        const checkbox = $(this).children('.del_checkbox')[0];
+        if (!is_delete_mode || !(checkbox && (checkbox.offsetWidth > 0 || checkbox.offsetHeight > 0))) {
             return;
         }
         $('.mes').children('.del_checkbox').each(function () {
@@ -12265,7 +12266,8 @@ jQuery(async function () {
 
     $(document).on('keydown', function (e) {
         if (e.key === 'Escape' && !e.originalEvent.isComposing) {
-            const isEditVisible = $('#curEditTextarea').is(':visible') || $('.reasoning_edit_textarea').length > 0;
+            const editTextArea = document.getElementById('curEditTextarea');
+            const isEditVisible = (editTextArea && (editTextArea.offsetWidth > 0 || editTextArea.offsetHeight > 0)) || $('.reasoning_edit_textarea').length > 0;
             if (isEditVisible && power_user.auto_save_msg_edits === false) {
                 closeMessageEditor('all');
                 $('#send_textarea').trigger('focus');
@@ -12277,7 +12279,8 @@ jQuery(async function () {
                 $('#send_textarea').trigger('focus');
                 return;
             }
-            if (this_edit_mes_id === undefined && $('#mes_stop').is(':visible')) {
+            const mesStop = document.getElementById('mes_stop');
+            if (this_edit_mes_id === undefined && mesStop && (mesStop.offsetWidth > 0 || mesStop.offsetHeight > 0)) {
                 $('#mes_stop').trigger('click');
                 if (chat.length === 0) return;
                 const lastMessage = chat[chat.length - 1];
