@@ -957,10 +957,16 @@ export function initRossMods() {
 
 
     function isInputElementInFocus() {
-        //return $(document.activeElement).is(":input");
-        var focused = $(':focus');
-        if (focused.is('input') || focused.is('textarea') || focused.prop('contenteditable') == 'true') {
-            if (focused.attr('id') === 'send_textarea') {
+        const active = document.activeElement;
+        if (!active) {
+            return false;
+        }
+
+        const tagName = active.tagName.toLowerCase();
+        const isEditable = active.isContentEditable || tagName === 'input' || tagName === 'textarea';
+
+        if (isEditable) {
+            if (active.id === 'send_textarea') {
                 return false;
             }
             return true;

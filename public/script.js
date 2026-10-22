@@ -11057,7 +11057,7 @@ jQuery(async function () {
         }
     });
     $(document).on('click', event => {
-        if ($(':focus').attr('id') !== 'send_textarea') {
+        if (document.activeElement?.id !== 'send_textarea') {
             var validIDs = ['options_button', 'send_but', 'mes_impersonate', 'mes_continue', 'send_textarea', 'option_regenerate', 'option_continue'];
             if (!validIDs.includes($(event.target).attr('id'))) {
                 S_TAPreviouslyFocused = false;
