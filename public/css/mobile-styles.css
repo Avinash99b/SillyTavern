@@ -1,5 +1,13 @@
 /*will apply to anything 1000px or less. this catches ipads, horizontal phones, and vertical phones)*/
 @media screen and (max-width: 1000px) {
+    :root {
+        --mobile-control-size: 44px;
+        --mobile-safe-inline: max(env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+        --mobile-safe-block: max(env(safe-area-inset-top, 0px), env(safe-area-inset-bottom, 0px));
+        --mobile-vn-height: min(max(40dvh, 160px), calc(100dvh - var(--topBarBlockSize)));
+        --topBarIconSize: clamp(20px, 5.5vw, 26px);
+        --topBarBlockSize: calc(48px + env(safe-area-inset-top, 0px));
+    }
 
     #UI-Theme-Block,
     #UI-Customization,
@@ -248,7 +256,9 @@
     }
 
     body {
-        touch-action: none;
+        /* Keep native scrolling, text selection and pinch zoom available. */
+        touch-action: auto;
+        overscroll-behavior: none;
         overflow: hidden;
         position: fixed;
     }
@@ -260,12 +270,14 @@
     .drawer-content {
         min-width: unset;
         width: 100dvw;
-        max-height: calc(100vh - 45px);
-        max-height: calc(100dvh - 45px);
+        max-height: calc(100vh - var(--topBarBlockSize));
+        max-height: calc(100dvh - var(--topBarBlockSize));
         position: fixed;
         left: 0;
         top: 5px;
         border: 1px solid var(--SmartThemeBorderColor);
+        padding-inline: max(5px, env(safe-area-inset-left, 0px)) max(5px, env(safe-area-inset-right, 0px));
+        padding-bottom: max(5px, env(safe-area-inset-bottom, 0px));
     }
 
     .drawer-content .floating_panel_maximize,
@@ -290,6 +302,44 @@
         position: fixed;
         width: 100vw;
         width: 100dvw;
+        height: var(--topBarBlockSize);
+    }
+
+    #top-settings-holder {
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px);
+    }
+
+    #top-settings-holder > .drawer {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+    #top-settings-holder > .drawer > .drawer-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 48px;
+    }
+
+    #top-settings-holder .drawer-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        border-radius: 10px;
+    }
+
+    #top-settings-holder .drawer-icon.closedIcon {
+        opacity: 0.7;
+    }
+
+    #top-settings-holder .drawer-icon.openIcon {
+        background-color: var(--white20a);
+        box-shadow: inset 0 -3px var(--SmartThemeBodyColor);
     }
 
     #bg1,
@@ -340,7 +390,7 @@
     #character_popup,
     #send_form {
         border: 1px solid var(--SmartThemeBorderColor);
-        backdrop-filter: blur(calc(var(--SmartThemeBlurStrength) * 2));
+        backdrop-filter: blur(var(--SmartThemeBlurStrength));
         max-width: 100dvw;
     }
 
@@ -351,7 +401,66 @@
         align-items: start;
         align-content: start;
         overflow-y: auto;
-        overflow-x: hidden
+        overflow-x: hidden;
+        min-height: 0;
+        max-height: none;
+        flex: 1 1 0;
+        overscroll-behavior-y: contain;
+        scroll-padding-block: 12px;
+    }
+
+    body:not(.waifuMode) #sheld {
+        height: calc(100vh - var(--topBarBlockSize));
+        height: calc(100dvh - var(--topBarBlockSize));
+        max-height: calc(100dvh - var(--topBarBlockSize));
+        min-height: 0;
+        padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px);
+    }
+
+    #form_sheld {
+        flex-shrink: 0;
+    }
+
+    #send_form {
+        border-radius: 16px 16px 0 0;
+        padding: 4px 2px max(4px, env(safe-area-inset-bottom, 0px));
+    }
+
+    #nonQRFormItems {
+        column-gap: 4px;
+        align-items: flex-end;
+    }
+
+    #leftSendForm,
+    #rightSendForm {
+        width: var(--mobile-control-size);
+        flex-shrink: 0;
+        padding: 0;
+    }
+
+    #leftSendForm > div,
+    #rightSendForm > div {
+        min-width: var(--mobile-control-size);
+        min-height: var(--mobile-control-size);
+        border-radius: 12px;
+        opacity: 0.85;
+    }
+
+    #send_textarea {
+        min-width: 0;
+        min-height: var(--mobile-control-size);
+        max-height: 40vh;
+        max-height: 40dvh;
+        padding: 10px 6px;
+        font-size: max(16px, var(--mainFontSize));
+        line-height: 1.5;
+        resize: none;
+        scroll-padding-block: 10px;
+    }
+
+    #form_sheld.isExecutingCommandsFromChatInput :is(#send_but, #mes_continue) {
+        min-width: 0;
+        min-height: 0;
     }
 
     .mes_buttons {
@@ -376,8 +485,8 @@
     #logprobsViewer,
     #movingDivs>div {
         /* 100vh are fallback units for browsers that don't support dvh */
-        height: calc(100vh - 45px);
-        height: calc(100dvh - 45px);
+        height: calc(100vh - var(--topBarBlockSize));
+        height: calc(100dvh - var(--topBarBlockSize));
         min-width: 100dvw !important;
         width: 100dvw !important;
         max-width: 100dvw !important;
@@ -388,7 +497,7 @@
         border-radius: 0 0 20px 20px;
         top: var(--topBarBlockSize) !important;
         left: 0 !important;
-        backdrop-filter: blur(calc(var(--SmartThemeBlurStrength) * 2));
+        backdrop-filter: blur(var(--SmartThemeBlurStrength));
 
         @starting-style {
             height: 0;
@@ -446,10 +555,17 @@
 
     body.waifuMode #sheld {
         height: 40vh;
-        height: 40dvh;
+        height: var(--mobile-vn-height);
+        min-height: 0;
+        max-height: var(--mobile-vn-height);
         top: 60vh;
-        top: 60dvh;
+        top: calc(100dvh - var(--mobile-vn-height));
         bottom: 0 !important;
+        padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px);
+    }
+
+    body.waifuMode #send_textarea {
+        max-height: max(var(--mobile-control-size), calc(var(--mobile-vn-height) - 64px - env(safe-area-inset-bottom, 0px)));
     }
 
     body:not(.waifuMode) #expression-wrapper {
@@ -493,8 +609,10 @@
     .scrollableInner {
         overflow-y: auto;
         overflow-x: hidden;
-        max-height: calc(100vh - 90px);
-        max-height: calc(100dvh - 90px);
+        min-height: 0;
+        flex: 1 1 auto;
+        max-height: calc(100vh - var(--topBarBlockSize));
+        max-height: calc(100dvh - var(--topBarBlockSize));
     }
 
     .horde_multiple_hint {
@@ -504,6 +622,226 @@
     select[multiple] {
         max-height: 50px;
         overflow-y: auto;
+    }
+
+    /* Dense settings remain familiar, with room for a fingertip on each action. */
+    :is(.drawer-content, .popup, #chat) .menu_button,
+    .popup .popup-button-close {
+        min-width: var(--mobile-control-size);
+        min-height: var(--mobile-control-size);
+        border-radius: 10px;
+    }
+
+    .drawer-content :is(input[type="text"], input[type="search"], input[type="password"], input[type="url"], input[type="number"], select:not([multiple])),
+    .popup :is(input[type="text"], input[type="search"], input[type="password"], input[type="url"], input[type="number"], select:not([multiple])) {
+        min-height: var(--mobile-control-size);
+        min-width: 0;
+        font-size: max(16px, var(--mainFontSize));
+    }
+
+    .drawer-content textarea,
+    .popup textarea {
+        font-size: max(16px, var(--mainFontSize));
+    }
+
+    .drawer-content :is(.checkbox_label, .inline-drawer-header) {
+        min-height: var(--mobile-control-size);
+        align-items: center;
+    }
+
+    .drawer-content input:is([type="checkbox"], [type="radio"]) {
+        flex-shrink: 0;
+        width: 20px;
+        height: 20px;
+    }
+
+    .drawer-content :is(.drawer25pWidth, .drawer33pWidth) {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .drawer-content .paginationjs {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .drawer-content .paginationjs-pages ul {
+        flex-wrap: wrap;
+    }
+
+    .drawer-content .paginationjs-pages ul li a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+        min-height: var(--mobile-control-size);
+    }
+
+    :is(.drawer-content, .scrollableInner, .scrollableInnerFull, .popup-content, .select2-results__options, #extensionsMenu, .options-content) {
+        overscroll-behavior-y: contain;
+        scroll-padding-block: 12px;
+    }
+
+    #options .options-content a,
+    #extensionsMenu > .extension_container > div,
+    #extensionsMenu > div:not(.extension_container) {
+        min-height: var(--mobile-control-size);
+        padding: 10px 12px;
+        align-items: center;
+        opacity: 0.85;
+    }
+
+    .select2-container .select2-selection--single {
+        min-height: var(--mobile-control-size);
+        display: flex;
+        align-items: center;
+    }
+
+    .select2-container .select2-selection--single .select2-selection__rendered {
+        padding-right: 28px;
+    }
+
+    .select2-container .select2-selection--single .select2-selection__arrow {
+        height: 100%;
+    }
+
+    .select2-results__option[role="option"] {
+        min-height: var(--mobile-control-size);
+        padding: 10px;
+    }
+
+    .select2-container .select2-results > .select2-results__options {
+        max-height: min(300px, 40dvh);
+    }
+
+    .select2-search--dropdown .select2-search__field {
+        min-height: var(--mobile-control-size);
+        font-size: max(16px, var(--mainFontSize));
+    }
+
+    .mes_buttons,
+    .extraMesButtons {
+        flex-wrap: wrap;
+        gap: 2px;
+        min-width: 0;
+    }
+
+    .mes_button,
+    .extraMesButtons > div {
+        min-width: 36px;
+        min-height: 40px;
+        padding: 10px 8px;
+        text-align: center;
+        opacity: 0.7;
+    }
+
+    .mes .ch_name {
+        flex-wrap: wrap;
+        row-gap: 4px;
+    }
+
+    .mes .mes_buttons {
+        margin-inline-start: auto;
+    }
+
+    .mes_edit_buttons {
+        flex-wrap: wrap;
+        max-width: 100%;
+        row-gap: 5px;
+    }
+
+    .swipe_left,
+    .swipe_right {
+        width: var(--mobile-control-size);
+        height: var(--mobile-control-size);
+    }
+
+    #persona_controls .persona_controls_buttons_block {
+        flex-basis: 100%;
+        order: 1;
+        justify-content: flex-start;
+    }
+
+    .welcomePanel .welcomeHeader {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 4px;
+    }
+
+    .welcomePanel .recentChatsTitle {
+        flex-basis: 100%;
+    }
+
+    .welcomePanel .welcomeShortcuts {
+        justify-content: flex-start;
+    }
+
+    .welcomePanel .recentChatInfo {
+        min-width: 0;
+    }
+
+    .welcomePanel .chatNameContainer {
+        flex-wrap: wrap;
+    }
+
+    .welcomePanel .chatActions {
+        margin-inline-start: auto;
+    }
+
+    /* Let content shrink inside the dialog so the action row stays reachable. */
+    .popup {
+        max-width: calc(100dvw - 24px - 2 * var(--mobile-safe-inline));
+        max-height: calc(100dvh - 24px - 2 * var(--mobile-safe-block));
+        min-height: 0;
+        padding: 8px;
+        border-radius: 16px;
+    }
+
+    .popup .popup-body,
+    .popup .popup-content {
+        min-height: 0;
+        min-width: 0;
+    }
+
+    .popup:is(.wide_dialogue_popup, .wider_dialogue_popup) {
+        min-width: 0;
+        width: calc(100dvw - 24px - 2 * var(--mobile-safe-inline));
+    }
+
+    .popup .popup-content {
+        padding-inline: 4px;
+    }
+
+    .popup .popup-controls {
+        flex-shrink: 0;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        max-width: 100%;
+    }
+
+    .popup .popup-controls .menu_button {
+        margin: 0;
+        padding: 10px 16px;
+        overflow-wrap: anywhere;
+    }
+
+    :is(.menu_button, .drawer-icon, .mes_button, #leftSendForm > div, #rightSendForm > div, .options-content a):active {
+        background-color: var(--white20a);
+    }
+}
+
+@media screen and (max-width: 1000px) and (prefers-reduced-motion: reduce) {
+    .drawer-content,
+    .drawer-icon,
+    .menu_button,
+    .mes_button,
+    #send_textarea {
+        transition: none;
+    }
+
+    .popup {
+        --popup-animation-speed: 0ms;
     }
 }
 
@@ -573,7 +911,7 @@
 
     #leftSendForm,
     #rightSendForm {
-        width: 1.15em;
+        width: var(--mobile-control-size);
         flex-wrap: wrap;
         height: unset;
     }

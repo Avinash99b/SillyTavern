@@ -2951,7 +2951,12 @@ export function setupScrollToTop({ scrollContainerId, buttonId, drawerId, visibi
         return () => { /* noop cleanup */ };
     }
 
-    const updateButtonVisibility = () => btn.classList.toggle('visible', scrollContainer.scrollTop > visibilityThreshold);
+    const updateButtonVisibility = () => {
+        const visible = scrollContainer.scrollTop > visibilityThreshold;
+        if (btn.classList.contains('visible') !== visible) {
+            btn.classList.toggle('visible', visible);
+        }
+    };
     const updateButtonVisibilityThrottled = lodash.throttle(updateButtonVisibility, debounce_timeout.standard, { leading: true, trailing: true });
     const onScroll = () => updateButtonVisibilityThrottled();
     scrollContainer.addEventListener('scroll', onScroll, { passive: true });
@@ -2969,9 +2974,10 @@ export function setupScrollToTop({ scrollContainerId, buttonId, drawerId, visibi
     let frameHandle = null;
     const resizeObserver = new ResizeObserver(() => {
         if (frameHandle !== null) {
-            cancelAnimationFrame(frameHandle);
+            return;
         }
         frameHandle = requestAnimationFrame(() => {
+            frameHandle = null;
             updateButtonVisibilityThrottled();
         });
     });
@@ -2985,6 +2991,8 @@ export function setupScrollToTop({ scrollContainerId, buttonId, drawerId, visibi
         scrollContainer.removeEventListener('scroll', onScroll);
         btn.removeEventListener('click', onActivate);
         resizeObserver.disconnect();
+        if (frameHandle !== null) cancelAnimationFrame(frameHandle);
+        updateButtonVisibilityThrottled.cancel();
     };
 }
 

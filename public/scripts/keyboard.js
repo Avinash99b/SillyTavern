@@ -33,6 +33,8 @@ if (CSS.supports('selector(:has(*))')) {
     interactableSelectors.push('#extensionsMenu div:has(.extensionsMenuExtensionButton)');
 }
 
+let combinedInteractableSelector = interactableSelectors.join(', ');
+
 export const INTERACTABLE_CONTROL_CLASS = 'interactable';
 export const CUSTOM_INTERACTABLE_CONTROL_CLASS = 'custom_interactable';
 
@@ -44,17 +46,25 @@ export const DISABLED_CONTROL_CLASS = 'disabled';
  * @type {MutationObserver}
  */
 const observer = new MutationObserver(mutations => {
-    mutations.forEach(mutation => {
+    const changedElements = new Set();
+    for (const mutation of mutations) {
         if (mutation.type === 'childList') {
-            mutation.addedNodes.forEach(handleNodeChange);
-        }
-        if (mutation.type === 'attributes') {
-            const target = mutation.target;
-            if (mutation.attributeName === 'class' && target instanceof Element) {
-                handleNodeChange(target);
+            for (const node of mutation.addedNodes) {
+                if (node instanceof Element) changedElements.add(node);
             }
         }
-    });
+        if (mutation.type === 'attributes' && mutation.attributeName === 'class' && mutation.target instanceof Element) {
+            changedElements.add(mutation.target);
+        }
+    }
+
+    // An ancestor scan already initializes its descendants. Coalesce repeated and
+    // overlapping mutations in the same delivery without delaying focus updates.
+    for (const element of changedElements) {
+        let ancestor = element.parentElement;
+        while (ancestor && !changedElements.has(ancestor)) ancestor = ancestor.parentElement;
+        if (!ancestor) handleNodeChange(element);
+    }
 });
 
 /**
@@ -88,6 +98,7 @@ function handleNodeChange(node) {
  */
 export function registerInteractableType(interactableSelector, { disabledByDefault = false, notFocusableByDefault = false } = {}) {
     interactableSelectors.push(interactableSelector);
+    combinedInteractableSelector = interactableSelectors.join(', ');
 
     const interactables = document.querySelectorAll(interactableSelector);
 
@@ -151,7 +162,7 @@ export function makeKeyboardInteractable(...interactables) {
                 const tabIndex = interactable.getAttribute('data-original-tabindex') ?? '0';
                 interactable.setAttribute('tabindex', tabIndex);
             }
-        } else {
+        } else if (interactable.hasAttribute('tabindex')) {
             interactable.setAttribute('data-original-tabindex', interactable.getAttribute('tabindex'));
             interactable.removeAttribute('tabindex');
         }
@@ -175,8 +186,9 @@ function initializeInteractables(element = document) {
  * @returns {HTMLElement[]} An array containing all the interactables that match the given selectors
  */
 function getAllInteractables(element) {
-    // Query each selector individually and combine all to a big array to return
-    return [].concat(...interactableSelectors.map(selector => Array.from(element.querySelectorAll(`${selector}`))));
+    // Query the selector list once and return each control once,
+    // including controls matching multiple built-in or extension selectors.
+    return Array.from(element.querySelectorAll(combinedInteractableSelector));
 }
 
 /**

@@ -1,0 +1,230 @@
+{
+  "baselineRef": "394e5b632a44134a8565be76ade4de9f832ef9ab",
+  "browser": "Chromium 141.0.7390.37",
+  "viewport": {
+    "width": 393,
+    "height": 851
+  },
+  "cpuThrottle": 4,
+  "timingSamplesPerVariant": 4,
+  "querySamplesPerVariant": 1,
+  "note": "Synthetic offscreen UI observer workload; timing samples are uninstrumented. No inference, network speed or physical-device performance measurement.",
+  "summary": {
+    "insert": {
+      "scriptMs": {
+        "beforeMedian": 278.0465,
+        "afterMedian": 172.12699999999992,
+        "reductionPercent": 38.09416770216495
+      },
+      "taskMs": {
+        "beforeMedian": 592.0560000000004,
+        "afterMedian": 533.6665000000003,
+        "reductionPercent": 9.862158309349123
+      },
+      "elapsedMs": {
+        "beforeMedian": 584.1999999999534,
+        "afterMedian": 525.4000000001397,
+        "reductionPercent": 10.06504621701787
+      }
+    },
+    "updates": {
+      "scriptMs": {
+        "beforeMedian": 170.21199999999993,
+        "afterMedian": 47.703999999999965,
+        "reductionPercent": 71.97377388198247
+      },
+      "taskMs": {
+        "beforeMedian": 237.7239999999996,
+        "afterMedian": 73.06899999999983,
+        "reductionPercent": 69.2630950177517
+      },
+      "elapsedMs": {
+        "beforeMedian": 484.7499999998836,
+        "afterMedian": 442.0999999998603,
+        "reductionPercent": 8.79834966478258
+      }
+    }
+  },
+  "runs": [
+    {
+      "variant": "before",
+      "instrument": false,
+      "insert": {
+        "elapsedMs": 580.5,
+        "queries": 0,
+        "scriptMs": 285.5699999999999,
+        "taskMs": 587.9400000000006,
+        "layouts": 1
+      },
+      "updates": {
+        "elapsedMs": 492.69999999995343,
+        "queries": 0,
+        "scriptMs": 164.96999999999983,
+        "taskMs": 270.74099999999925,
+        "layouts": 0
+      }
+    },
+    {
+      "variant": "after",
+      "instrument": false,
+      "insert": {
+        "elapsedMs": 458.39999999990687,
+        "queries": 0,
+        "scriptMs": 159.84599999999995,
+        "taskMs": 462.03400000000005,
+        "layouts": 1
+      },
+      "updates": {
+        "elapsedMs": 437.39999999990687,
+        "queries": 0,
+        "scriptMs": 47.29800000000006,
+        "taskMs": 63.92699999999962,
+        "layouts": 0
+      }
+    },
+    {
+      "variant": "after",
+      "instrument": false,
+      "insert": {
+        "elapsedMs": 527.6000000000931,
+        "queries": 0,
+        "scriptMs": 168.92099999999988,
+        "taskMs": 534.3460000000002,
+        "layouts": 1
+      },
+      "updates": {
+        "elapsedMs": 460.5,
+        "queries": 0,
+        "scriptMs": 51.18900000000015,
+        "taskMs": 77.731,
+        "layouts": 0
+      }
+    },
+    {
+      "variant": "before",
+      "instrument": false,
+      "insert": {
+        "elapsedMs": 587.8999999999069,
+        "queries": 0,
+        "scriptMs": 270.5230000000001,
+        "taskMs": 596.1720000000001,
+        "layouts": 1
+      },
+      "updates": {
+        "elapsedMs": 521.8999999999069,
+        "queries": 0,
+        "scriptMs": 175.454,
+        "taskMs": 297.1920000000008,
+        "layouts": 0
+      }
+    },
+    {
+      "variant": "before",
+      "instrument": false,
+      "insert": {
+        "elapsedMs": 546.8999999999069,
+        "queries": 0,
+        "scriptMs": 264.71299999999997,
+        "taskMs": 565.6359999999996,
+        "layouts": 1
+      },
+      "updates": {
+        "elapsedMs": 431.10000000009313,
+        "queries": 0,
+        "scriptMs": 161.02100000000007,
+        "taskMs": 175.77400000000054,
+        "layouts": 0
+      }
+    },
+    {
+      "variant": "after",
+      "instrument": false,
+      "insert": {
+        "elapsedMs": 523.2000000001863,
+        "queries": 0,
+        "scriptMs": 175.33299999999997,
+        "taskMs": 532.9870000000003,
+        "layouts": 1
+      },
+      "updates": {
+        "elapsedMs": 443.5,
+        "queries": 0,
+        "scriptMs": 44.978000000000186,
+        "taskMs": 68.40699999999967,
+        "layouts": 0
+      }
+    },
+    {
+      "variant": "after",
+      "instrument": false,
+      "insert": {
+        "elapsedMs": 546.5,
+        "queries": 0,
+        "scriptMs": 187.5119999999999,
+        "taskMs": 550.3520000000002,
+        "layouts": 1
+      },
+      "updates": {
+        "elapsedMs": 440.6999999997206,
+        "queries": 0,
+        "scriptMs": 48.10999999999987,
+        "taskMs": 98.56400000000053,
+        "layouts": 0
+      }
+    },
+    {
+      "variant": "before",
+      "instrument": false,
+      "insert": {
+        "elapsedMs": 738.3999999999069,
+        "queries": 0,
+        "scriptMs": 323.71700000000004,
+        "taskMs": 751.2090000000003,
+        "layouts": 1
+      },
+      "updates": {
+        "elapsedMs": 476.79999999981374,
+        "queries": 0,
+        "scriptMs": 179.76900000000006,
+        "taskMs": 204.70699999999997,
+        "layouts": 0
+      }
+    },
+    {
+      "variant": "before",
+      "instrument": true,
+      "insert": {
+        "elapsedMs": 636.7000000001863,
+        "queries": 44837,
+        "scriptMs": 303.207,
+        "taskMs": 642.1109999999999,
+        "layouts": 1
+      },
+      "updates": {
+        "elapsedMs": 461.20000000018626,
+        "queries": 28001,
+        "scriptMs": 152.93,
+        "taskMs": 194.9179999999995,
+        "layouts": 0
+      }
+    },
+    {
+      "variant": "after",
+      "instrument": true,
+      "insert": {
+        "elapsedMs": 387.60000000009313,
+        "queries": 3211,
+        "scriptMs": 76.932,
+        "taskMs": 391.52399999999955,
+        "layouts": 1
+      },
+      "updates": {
+        "elapsedMs": 444.60000000009313,
+        "queries": 201,
+        "scriptMs": 45.29399999999995,
+        "taskMs": 70.31900000000047,
+        "layouts": 0
+      }
+    }
+  ]
+}
